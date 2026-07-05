@@ -17,4 +17,5 @@ public interface JobRepository extends JpaRepository<Job, UUID> {
     List<Job> findByStatusAndScheduledAtLessThanEqual(
             JobStatus status,
             LocalDateTime scheduledAt);
+    long countByStatus(JobStatus status);
 }
