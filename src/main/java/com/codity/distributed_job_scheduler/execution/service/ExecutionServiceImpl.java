@@ -4,6 +4,7 @@ import com.codity.distributed_job_scheduler.common.enums.JobStatus;
 import com.codity.distributed_job_scheduler.job.entity.Job;
 import com.codity.distributed_job_scheduler.job.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class ExecutionServiceImpl implements ExecutionService {
 
     private final JobRepository jobRepository;
 
+    @Async("jobExecutor")
     @Override
     public void execute(Job job) {
 
@@ -22,7 +24,11 @@ public class ExecutionServiceImpl implements ExecutionService {
 
         try {
 
-            System.out.println("Executing Job : " + job.getName());
+            System.out.println(
+                    Thread.currentThread().getName()
+                            + " -> Executing : "
+                            + job.getName()
+            );
 
             Thread.sleep(3000);
 
