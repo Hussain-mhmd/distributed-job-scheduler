@@ -6,7 +6,11 @@ import com.codity.distributed_job_scheduler.job.entity.Job;
 import com.codity.distributed_job_scheduler.job.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RetryServiceImpl implements RetryService {
@@ -22,17 +26,15 @@ public class RetryServiceImpl implements RetryService {
             job.setRetryCount(job.getRetryCount() + 1);
 
             job.setStatus(JobStatus.PENDING);
+            job.setScheduledAt(LocalDateTime.now().plusSeconds(5));
 
             jobRepository.save(job);
 
-            System.out.println(
-                    "Retrying Job : "
-                            + job.getName()
-                            + " (Attempt "
-                            + job.getRetryCount()
-                            + ")"
+            log.info(
+                    "Retrying job {} attempt {}",
+                    job.getName(),
+                    job.getRetryCount()
             );
-
         } else {
 
             job.setStatus(JobStatus.FAILED);
@@ -44,9 +46,9 @@ public class RetryServiceImpl implements RetryService {
                     "Maximum retry attempts exceeded"
             );
 
-            System.out.println(
-                    "Job permanently failed : "
-                            + job.getName()
+            log.error(
+                    "Job {} moved to DLQ",
+                    job.getName()
             );
 
         }

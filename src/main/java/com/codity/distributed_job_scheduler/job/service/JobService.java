@@ -10,7 +10,9 @@ public interface JobService {
 
     JobResponse createJob(JobRequest request);
 
-    List<JobResponse> getJobs(UUID queueId);
+    List<JobResponse> getAll();
+
+    List<JobResponse> getByQueue(UUID queueId);
 
     JobResponse getJob(UUID id);
 

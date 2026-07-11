@@ -32,11 +32,18 @@ public class ProjectController {
 
     @GetMapping
     public ApiResponse<List<ProjectResponse>> getProjects(
-            @RequestParam UUID organizationId) {
+            @RequestParam(required = false) UUID organizationId) {
+
+        if (organizationId == null) {
+            return ApiResponse.success(
+                    "Projects fetched successfully.",
+                    projectService.getAll()
+            );
+        }
 
         return ApiResponse.success(
                 "Projects fetched successfully.",
-                projectService.getProjects(organizationId)
+                projectService.getByOrganization(organizationId)
         );
     }
 

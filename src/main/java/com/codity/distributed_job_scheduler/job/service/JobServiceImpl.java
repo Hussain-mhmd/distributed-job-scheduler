@@ -1,7 +1,5 @@
 package com.codity.distributed_job_scheduler.job.service;
 
-import com.codity.distributed_job_scheduler.common.util.SecurityUtil;
-import com.codity.distributed_job_scheduler.exception.BadRequestException;
 import com.codity.distributed_job_scheduler.exception.ResourceNotFoundException;
 import com.codity.distributed_job_scheduler.job.dto.JobRequest;
 import com.codity.distributed_job_scheduler.job.dto.JobResponse;
@@ -24,7 +22,6 @@ public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final QueueRepository queueRepository;
     private final JobMapper jobMapper;
-    private final SecurityUtil securityUtil;
 
     @Override
     public JobResponse createJob(JobRequest request) {
@@ -48,7 +45,16 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobResponse> getJobs(UUID queueId) {
+    public List<JobResponse> getAll() {
+
+        return jobRepository.findAll()
+                .stream()
+                .map(jobMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<JobResponse> getByQueue(UUID queueId) {
 
         return jobRepository.findByQueueId(queueId)
                 .stream()

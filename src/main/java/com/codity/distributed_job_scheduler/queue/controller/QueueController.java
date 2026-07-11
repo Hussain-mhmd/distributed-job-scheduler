@@ -32,11 +32,18 @@ public class QueueController {
 
     @GetMapping
     public ApiResponse<List<QueueResponse>> getQueues(
-            @RequestParam UUID projectId) {
+            @RequestParam(required = false) UUID projectId) {
+
+        if (projectId == null) {
+            return ApiResponse.success(
+                    "Queues fetched successfully.",
+                    queueService.getAll()
+            );
+        }
 
         return ApiResponse.success(
                 "Queues fetched successfully.",
-                queueService.getQueues(projectId)
+                queueService.getByProject(projectId)
         );
     }
 

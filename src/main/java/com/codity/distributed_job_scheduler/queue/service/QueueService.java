@@ -10,7 +10,9 @@ public interface QueueService {
 
     QueueResponse createQueue(QueueRequest request);
 
-    List<QueueResponse> getQueues(UUID projectId);
+    List<QueueResponse> getAll();
+
+    List<QueueResponse> getByProject(UUID projectId);
 
     QueueResponse getQueue(UUID id);
 

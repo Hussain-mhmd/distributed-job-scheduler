@@ -10,14 +10,14 @@ public interface ProjectService {
 
     ProjectResponse createProject(ProjectRequest request);
 
-    List<ProjectResponse> getProjects(UUID organizationId);
+    List<ProjectResponse> getAll();
+
+    List<ProjectResponse> getByOrganization(UUID organizationId);
 
     ProjectResponse getProject(UUID id);
 
-    ProjectResponse updateProject(
-            UUID id,
-            ProjectRequest request
-    );
+    ProjectResponse updateProject(UUID id,
+                                  ProjectRequest request);
 
     void deleteProject(UUID id);
 }

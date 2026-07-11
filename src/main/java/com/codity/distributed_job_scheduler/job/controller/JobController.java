@@ -27,11 +27,21 @@ public class JobController {
     }
 
     @GetMapping
-    public ApiResponse getJobs(@RequestParam UUID queueId) {
+    public ApiResponse<?> getJobs(
+            @RequestParam(required = false) UUID queueId
+    ) {
+
+        if (queueId == null) {
+            return ApiResponse.success(
+                    "Jobs fetched successfully.",
+                    jobService.getAll()
+            );
+        }
 
         return ApiResponse.success(
                 "Jobs fetched successfully.",
-                jobService.getJobs(queueId));
+                jobService.getByQueue(queueId)
+        );
     }
 
     @GetMapping("/{id}")

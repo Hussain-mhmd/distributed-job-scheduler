@@ -32,8 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         User currentUser = securityUtil.getCurrentUser();
 
-        Organization organization = organizationRepository
-                .findById(request.getOrganizationId())
+        Organization organization = organizationRepository.findById(request.getOrganizationId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Organization not found."));
 
@@ -60,7 +59,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponse> getProjects(UUID organizationId) {
+    public List<ProjectResponse> getAll() {
+
+        return projectRepository.findAll()
+                .stream()
+                .map(projectMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ProjectResponse> getByOrganization(UUID organizationId) {
 
         return projectRepository.findByOrganizationId(organizationId)
                 .stream()
@@ -79,8 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse updateProject(UUID id,
-                                         ProjectRequest request) {
+    public ProjectResponse updateProject(UUID id, ProjectRequest request) {
 
         Project project = projectRepository.findById(id)
                 .orElseThrow(() ->

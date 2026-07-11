@@ -59,7 +59,16 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public List<QueueResponse> getQueues(UUID projectId) {
+    public List<QueueResponse> getAll() {
+
+        return queueRepository.findAll()
+                .stream()
+                .map(queueMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<QueueResponse> getByProject(UUID projectId) {
 
         return queueRepository.findByProjectId(projectId)
                 .stream()
