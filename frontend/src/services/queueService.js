@@ -10,6 +10,11 @@ export const createQueue = async (queue) => {
     return response.data.data;
 };
 
+export const updateQueue = async (id, queue) => {
+    const response = await axios.put(`/queues/${id}`, queue);
+    return response.data.data;
+};
+
 export const deleteQueue = async (id) => {
     await axios.delete(`/queues/${id}`);
 };

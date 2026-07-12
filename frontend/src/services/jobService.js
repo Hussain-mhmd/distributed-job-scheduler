@@ -10,6 +10,11 @@ export const createJob = async (job) => {
     return response.data.data;
 };
 
+export const updateJob = async (id, job) => {
+    const response = await axios.put(`/jobs/${id}`, job);
+    return response.data.data;
+};
+
 export const deleteJob = async (id) => {
     await axios.delete(`/jobs/${id}`);
 };
