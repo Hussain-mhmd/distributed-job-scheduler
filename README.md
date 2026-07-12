@@ -46,10 +46,11 @@ The application follows a layered architecture consisting of Presentation, Appli
 ![Architecture](docs/Architecture.png)
 
 ---
-# ER Diagram
+# Entity Relationship Diagram
 
+The following ER diagram represents the database schema used in the Distributed Job Scheduler.
 
-![ER Diagram](docs/ER Diagram.png)
+![ER Diagram](docs/ER%20Diagram.png)
 
 ---
 
