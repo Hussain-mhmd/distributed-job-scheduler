@@ -46,6 +46,12 @@ The application follows a layered architecture consisting of Presentation, Appli
 ![Architecture](docs/Architecture.png)
 
 ---
+# ER Diagram
+
+
+![ER Diagram](docs/ER Diagram.png)
+
+---
 
 # Application Screenshots
 
