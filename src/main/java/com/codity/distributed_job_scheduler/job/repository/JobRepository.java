@@ -14,8 +14,19 @@ public interface JobRepository extends JpaRepository<Job, UUID> {
     List<Job> findByQueueId(UUID queueId);
 
     List<Job> findByStatus(JobStatus status);
+
     List<Job> findByStatusAndScheduledAtLessThanEqual(
             JobStatus status,
             LocalDateTime scheduledAt);
+
     long countByStatus(JobStatus status);
+
+    List<Job> findByQueueProjectOrganizationOwnerId(UUID ownerId);
+
+    long countByQueueProjectOrganizationOwnerId(UUID ownerId);
+
+    long countByStatusAndQueueProjectOrganizationOwnerId(
+            JobStatus status,
+            UUID ownerId
+    );
 }

@@ -12,6 +12,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import com.codity.distributed_job_scheduler.auth.entity.User;
+import com.codity.distributed_job_scheduler.common.util.SecurityUtil;
+import com.codity.distributed_job_scheduler.exception.BadRequestException;
+import com.codity.distributed_job_scheduler.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final JobExecutionRepository repository;
     private final JobExecutionMapper mapper;
+    private final SecurityUtil securityUtil;
 
     @Override
     public JobExecution startExecution(Job job) {
@@ -69,7 +74,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     @Override
     public List<JobExecutionResponse> getAll() {
 
-        return repository.findAllByOrderByStartedAtDesc()
+        User currentUser = securityUtil.getCurrentUser();
+
+        return repository
+                .findByJobQueueProjectOrganizationOwnerIdOrderByStartedAtDesc(
+                        currentUser.getId()
+                )
                 .stream()
                 .map(mapper::toResponse)
                 .toList();
@@ -78,7 +88,13 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     @Override
     public List<JobExecutionResponse> getByJob(UUID jobId) {
 
-        return repository.findByJobIdOrderByStartedAtDesc(jobId)
+        User currentUser = securityUtil.getCurrentUser();
+
+        return repository
+                .findByJobIdAndJobQueueProjectOrganizationOwnerIdOrderByStartedAtDesc(
+                        jobId,
+                        currentUser.getId()
+                )
                 .stream()
                 .map(mapper::toResponse)
                 .toList();

@@ -1,0 +1,29 @@
+:root{
+
+    --primary:#2563eb;
+
+    --primary-dark:#1d4ed8;
+
+    --success:#16a34a;
+
+    --danger:#dc2626;
+
+    --warning:#d97706;
+
+    --sidebar:#1e293b;
+
+    --background:#f4f7fb;
+
+    --card:#ffffff;
+
+    --text:#111827;
+
+    --muted:#6b7280;
+
+    --border:#e5e7eb;
+
+    --radius:12px;
+
+    --shadow:0 4px 16px rgba(0,0,0,.08);
+
+}

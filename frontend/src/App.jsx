@@ -12,6 +12,7 @@ import ExecutionHistory from "./pages/ExecutionHistory";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -20,6 +21,11 @@ function App() {
       <Routes>
 
         <Route path="/" element={<Login />} />
+
+<Route
+    path="/register"
+    element={<Register />}
+/>
 
         <Route
           element={

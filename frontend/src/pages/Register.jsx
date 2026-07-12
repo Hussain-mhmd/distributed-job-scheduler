@@ -11,40 +11,48 @@ import {
 import authService from "../services/authService";
 import AuthLayout from "../components/AuthLayout";
 
-function Login() {
+function Register() {
 
     const navigate = useNavigate();
 
+    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
 
-    async function handleLogin(e) {
+    async function handleRegister(e) {
 
         e.preventDefault();
+
+        if (password !== confirmPassword) {
+
+            alert("Passwords do not match.");
+
+            return;
+
+        }
 
         try {
 
             setLoading(true);
 
-            const response = await authService.login({
+            await authService.register({
+                fullName,
                 email,
                 password,
             });
 
-            localStorage.setItem(
-                "token",
-                response.data.data.token
-            );
+            alert("Registration successful.");
 
-            navigate("/dashboard");
+            navigate("/");
 
         } catch (error) {
 
             alert(
                 error.response?.data?.message ||
-                "Login failed"
+                "Registration failed."
             );
 
         } finally {
@@ -81,13 +89,24 @@ function Login() {
                     color="text.secondary"
                     mb={4}
                 >
-                    Sign in to continue
+                    Create your account
                 </Typography>
 
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleRegister}>
+
+                    <TextField
+                        label="Full Name"
+                        fullWidth
+                        margin="normal"
+                        value={fullName}
+                        onChange={(e) =>
+                            setFullName(e.target.value)
+                        }
+                    />
 
                     <TextField
                         label="Email"
+                        type="email"
                         fullWidth
                         margin="normal"
                         value={email}
@@ -107,6 +126,17 @@ function Login() {
                         }
                     />
 
+                    <TextField
+                        label="Confirm Password"
+                        type="password"
+                        fullWidth
+                        margin="normal"
+                        value={confirmPassword}
+                        onChange={(e) =>
+                            setConfirmPassword(e.target.value)
+                        }
+                    />
+
                     <Button
                         variant="contained"
                         fullWidth
@@ -117,7 +147,9 @@ function Login() {
                         type="submit"
                         disabled={loading}
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        {loading
+                            ? "Registering..."
+                            : "Register"}
                     </Button>
 
                 </form>
@@ -126,15 +158,15 @@ function Login() {
                     textAlign="center"
                     mt={3}
                 >
-                    Don't have an account?{" "}
+                    Already have an account?{" "}
                     <Link
-                        to="/register"
+                        to="/"
                         style={{
                             textDecoration: "none",
                             fontWeight: "bold",
                         }}
                     >
-                        Register
+                        Login
                     </Link>
                 </Typography>
 
@@ -146,4 +178,4 @@ function Login() {
 
 }
 
-export default Login;
+export default Register;

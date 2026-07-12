@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import com.codity.distributed_job_scheduler.auth.entity.User;
+import com.codity.distributed_job_scheduler.common.util.SecurityUtil;
+import com.codity.distributed_job_scheduler.exception.BadRequestException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +25,20 @@ public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final QueueRepository queueRepository;
     private final JobMapper jobMapper;
+    private final SecurityUtil securityUtil;
 
     @Override
     public JobResponse createJob(JobRequest request) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Queue queue = queueRepository.findById(request.getQueueId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         Job job = Job.builder()
                 .queue(queue)
@@ -47,7 +57,10 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobResponse> getAll() {
 
-        return jobRepository.findAll()
+        User currentUser = securityUtil.getCurrentUser();
+
+        return jobRepository
+                .findByQueueProjectOrganizationOwnerId(currentUser.getId())
                 .stream()
                 .map(jobMapper::toResponse)
                 .toList();
@@ -55,6 +68,16 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobResponse> getByQueue(UUID queueId) {
+
+        User currentUser = securityUtil.getCurrentUser();
+
+        Queue queue = queueRepository.findById(queueId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return jobRepository.findByQueueId(queueId)
                 .stream()
@@ -65,9 +88,15 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse getJob(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Job job = jobRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Job not found."));
+
+        if (!job.getQueue().getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return jobMapper.toResponse(job);
     }
@@ -75,13 +104,23 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobResponse updateJob(UUID id, JobRequest request) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Job job = jobRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Job not found."));
 
+        if (!job.getQueue().getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
+
         Queue queue = queueRepository.findById(request.getQueueId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         job.setQueue(queue);
         job.setName(request.getName());
@@ -99,9 +138,15 @@ public class JobServiceImpl implements JobService {
     @Override
     public void deleteJob(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Job job = jobRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Job not found."));
+
+        if (!job.getQueue().getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         jobRepository.delete(job);
     }

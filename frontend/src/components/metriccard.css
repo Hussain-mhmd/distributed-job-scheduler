@@ -1,0 +1,49 @@
+.metric-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    min-height:150px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    transition:.25s;
+
+}
+
+.metric-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 18px 35px rgba(0,0,0,.15);
+
+}
+
+.metric-title{
+
+    font-size:15px;
+
+    color:#6b7280;
+
+    margin-bottom:18px;
+
+}
+
+.metric-value{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}

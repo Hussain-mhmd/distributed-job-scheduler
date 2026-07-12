@@ -14,4 +14,7 @@ public interface QueueRepository extends JpaRepository<Queue, UUID> {
             String name,
             UUID projectId
     );
+    List<Queue> findByProjectOrganizationOwnerId(UUID ownerId);
+
+    long countByProjectOrganizationOwnerId(UUID ownerId);
 }

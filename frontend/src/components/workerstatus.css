@@ -1,0 +1,39 @@
+.worker-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    transition:.25s;
+
+}
+
+.worker-card:hover{
+
+    background:#f8fafc;
+
+}
+
+.worker-card h4{
+
+    margin-bottom:6px;
+
+}
+
+.worker-card p{
+
+    color:#6b7280;
+
+    font-size:14px;
+
+}

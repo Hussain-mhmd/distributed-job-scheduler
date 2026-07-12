@@ -61,7 +61,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectResponse> getAll() {
 
-        return projectRepository.findAll()
+        User currentUser = securityUtil.getCurrentUser();
+
+        return projectRepository
+                .findByOrganizationOwnerId(currentUser.getId())
                 .stream()
                 .map(projectMapper::toResponse)
                 .toList();
@@ -69,6 +72,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectResponse> getByOrganization(UUID organizationId) {
+
+        User currentUser = securityUtil.getCurrentUser();
+
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Organization not found."));
+
+        if (!organization.getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return projectRepository.findByOrganizationId(organizationId)
                 .stream()
@@ -79,9 +92,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse getProject(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Project project = projectRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Project not found."));
+
+        if (!project.getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return projectMapper.toResponse(project);
     }
@@ -92,6 +111,12 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Project not found."));
+
+        User currentUser = securityUtil.getCurrentUser();
+
+        if (!project.getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         project.setName(request.getName());
         project.setDescription(request.getDescription());
@@ -105,9 +130,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProject(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Project project = projectRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Project not found."));
+
+        if (!project.getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         projectRepository.delete(project);
     }

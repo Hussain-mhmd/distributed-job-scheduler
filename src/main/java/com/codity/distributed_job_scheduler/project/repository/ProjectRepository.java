@@ -14,4 +14,7 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
             String name,
             UUID organizationId
     );
+    List<Project> findByOrganizationOwnerId(UUID ownerId);
+
+    long countByOrganizationOwnerId(UUID ownerId);
 }

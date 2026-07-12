@@ -61,7 +61,10 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public List<QueueResponse> getAll() {
 
-        return queueRepository.findAll()
+        User currentUser = securityUtil.getCurrentUser();
+
+        return queueRepository
+                .findByProjectOrganizationOwnerId(currentUser.getId())
                 .stream()
                 .map(queueMapper::toResponse)
                 .toList();
@@ -69,6 +72,16 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public List<QueueResponse> getByProject(UUID projectId) {
+
+        User currentUser = securityUtil.getCurrentUser();
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Project not found."));
+
+        if (!project.getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return queueRepository.findByProjectId(projectId)
                 .stream()
@@ -79,9 +92,15 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public QueueResponse getQueue(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Queue queue = queueRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         return queueMapper.toResponse(queue);
     }
@@ -89,9 +108,15 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public QueueResponse updateQueue(UUID id, QueueRequest request) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Queue queue = queueRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         queue.setName(request.getName());
         queue.setDescription(request.getDescription());
@@ -105,9 +130,15 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void deleteQueue(UUID id) {
 
+        User currentUser = securityUtil.getCurrentUser();
+
         Queue queue = queueRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Queue not found."));
+
+        if (!queue.getProject().getOrganization().getOwner().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Access denied.");
+        }
 
         queueRepository.delete(queue);
     }

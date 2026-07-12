@@ -11,4 +11,13 @@ public interface JobExecutionRepository extends JpaRepository<JobExecution, UUID
     List<JobExecution> findByJobIdOrderByStartedAtDesc(UUID jobId);
 
     List<JobExecution> findAllByOrderByStartedAtDesc();
+
+    List<JobExecution> findByJobQueueProjectOrganizationOwnerIdOrderByStartedAtDesc(
+            UUID ownerId
+    );
+
+    List<JobExecution> findByJobIdAndJobQueueProjectOrganizationOwnerIdOrderByStartedAtDesc(
+            UUID jobId,
+            UUID ownerId
+    );
 }

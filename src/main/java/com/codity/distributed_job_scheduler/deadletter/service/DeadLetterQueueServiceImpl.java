@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
+import com.codity.distributed_job_scheduler.auth.entity.User;
+import com.codity.distributed_job_scheduler.common.util.SecurityUtil;
+import com.codity.distributed_job_scheduler.exception.BadRequestException;
 @Service
 @RequiredArgsConstructor
 public class DeadLetterQueueServiceImpl
         implements DeadLetterQueueService {
 
     private final DeadLetterQueueRepository repository;
+    private final SecurityUtil securityUtil;
 
     @Override
     public void moveToDeadLetter(Job job, String reason) {
@@ -38,7 +42,10 @@ public class DeadLetterQueueServiceImpl
     @Override
     public List<DeadLetterQueueResponse> getAll() {
 
-        return repository.findAll()
+        User currentUser = securityUtil.getCurrentUser();
+
+        return repository
+                .findByJobQueueProjectOrganizationOwnerId(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -47,11 +54,27 @@ public class DeadLetterQueueServiceImpl
     @Override
     public DeadLetterQueueResponse getById(UUID id) {
 
-        return mapToResponse(
+        User currentUser = securityUtil.getCurrentUser();
+
+        DeadLetterQueue deadLetter =
                 repository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException("Dead Letter not found"))
-        );
+                                new RuntimeException("Dead Letter not found"));
+
+        if (!deadLetter.getJob()
+                .getQueue()
+                .getProject()
+                .getOrganization()
+                .getOwner()
+                .getId()
+                .equals(currentUser.getId())) {
+
+            throw new BadRequestException("Access denied.");
+
+        }
+
+        return mapToResponse(deadLetter);
+
     }
 
     private DeadLetterQueueResponse mapToResponse(DeadLetterQueue deadLetter) {

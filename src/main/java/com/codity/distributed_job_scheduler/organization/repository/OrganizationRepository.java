@@ -12,4 +12,5 @@ public interface OrganizationRepository
     List<Organization> findByOwnerId(UUID ownerId);
 
     boolean existsByNameAndOwnerId(String name, UUID ownerId);
+    long countByOwnerId(UUID ownerId);
 }
