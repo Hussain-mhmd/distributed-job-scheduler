@@ -11,7 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(
+        name = "Organization APIs",
+        description = "APIs for managing organizations"
+)
 @RestController
 @RequestMapping("/api/v1/organizations")
 @RequiredArgsConstructor
@@ -19,6 +25,7 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
 
+    @Operation(summary = "Create Organization")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<OrganizationResponse> createOrganization(
@@ -29,6 +36,7 @@ public class OrganizationController {
                 organizationService.createOrganization(request)
         );
     }
+    @Operation(summary = "Get All Organizations")
     @GetMapping
     public ApiResponse<List<OrganizationResponse>> getMyOrganizations() {
 
@@ -37,6 +45,7 @@ public class OrganizationController {
                 organizationService.getMyOrganizations()
         );
     }
+    @Operation(summary = "Get Organization By ID")
     @GetMapping("/{id}")
     public ApiResponse<OrganizationResponse> getOrganization(
             @PathVariable UUID id) {
@@ -46,6 +55,7 @@ public class OrganizationController {
                 organizationService.getOrganization(id)
         );
     }
+    @Operation(summary = "Update Organization")
     @PutMapping("/{id}")
     public ApiResponse<OrganizationResponse> updateOrganization(
             @PathVariable UUID id,
@@ -56,6 +66,7 @@ public class OrganizationController {
                 organizationService.updateOrganization(id, request)
         );
     }
+    @Operation(summary = "Delete Organization")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteOrganization(
             @PathVariable UUID id) {

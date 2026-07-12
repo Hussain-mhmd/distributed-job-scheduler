@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI distributedJobSchedulerOpenAPI() {
+    public OpenAPI distributedJobSchedulerAPI() {
 
         return new OpenAPI()
 
@@ -20,31 +20,27 @@ public class SwaggerConfig {
 
                         .title("Distributed Job Scheduler API")
 
-                        .description("""
-                                REST API for a Distributed Job Scheduler System.
+                        .description(
+                                "REST API documentation for the Distributed Job Scheduler application."
+                        )
 
-                                Features:
-                                - Authentication
-                                - Organizations
-                                - Projects
-                                - Queues
-                                - Jobs
-                                - Workers
-                                - Retry Engine
-                                - Monitoring
-                                """)
-
-                        .version("1.0.0")
+                        .version("1.0")
 
                         .contact(new Contact()
-                                .name("Mohammad Hussain Shaik")
-                                .email("your-email@example.com"))
+
+                                .name("Shaik Mohammad Hussain")
+                                .email("ms1937@srmist.edu.in")
+                        )
 
                         .license(new License()
-                                .name("MIT License")))
+
+                                .name("MIT License")
+                        ))
 
                 .externalDocs(new ExternalDocumentation()
-                        .description("Project Documentation"));
+
+                        .description("Project Repository")
+                        .url("https://github.com/Hussain-mhmd/distributed-job-scheduler"));
     }
 
 }

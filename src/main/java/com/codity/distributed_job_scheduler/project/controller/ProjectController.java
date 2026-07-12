@@ -4,6 +4,8 @@ import com.codity.distributed_job_scheduler.common.response.ApiResponse;
 import com.codity.distributed_job_scheduler.project.dto.ProjectRequest;
 import com.codity.distributed_job_scheduler.project.dto.ProjectResponse;
 import com.codity.distributed_job_scheduler.project.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
+@Tag(
+        name = "Project APIs",
+        description = "APIs for managing projects"
+)
 @RestController
 @RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    @Operation(summary = "Create Project")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ProjectResponse> createProject(
@@ -30,6 +36,7 @@ public class ProjectController {
         );
     }
 
+    @Operation(summary = "Get All Projects")
     @GetMapping
     public ApiResponse<List<ProjectResponse>> getProjects(
             @RequestParam(required = false) UUID organizationId) {
@@ -47,7 +54,9 @@ public class ProjectController {
         );
     }
 
+    @Operation(summary = "Get Project By ID")
     @GetMapping("/{id}")
+
     public ApiResponse<ProjectResponse> getProject(
             @PathVariable UUID id) {
 
@@ -57,6 +66,7 @@ public class ProjectController {
         );
     }
 
+    @Operation(summary = "Update Project")
     @PutMapping("/{id}")
     public ApiResponse<ProjectResponse> updateProject(
             @PathVariable UUID id,
@@ -68,6 +78,7 @@ public class ProjectController {
         );
     }
 
+    @Operation(summary = "Delete Project")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProject(
             @PathVariable UUID id) {

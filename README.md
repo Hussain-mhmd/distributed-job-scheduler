@@ -199,6 +199,9 @@ Swagger UI
 http://localhost:9090/swagger-ui/index.html
 
 ```
+Interactive API documentation is available through Swagger UI.
+
+![Swagger](docs/screenshots/swagger.png)
 
 ---
 
