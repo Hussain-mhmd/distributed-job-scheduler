@@ -43,7 +43,7 @@ The application allows users to create organizations, projects, queues and jobs,
 
 The application follows a layered architecture consisting of Presentation, Application, Processing and Persistence layers.
 
-![Architecture](docs/architecture.png)
+![Architecture](docs/Architecture.png)
 
 ---
 
